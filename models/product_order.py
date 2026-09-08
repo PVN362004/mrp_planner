@@ -39,6 +39,6 @@ class ProductOrder(models.Model):
         ('in_progress', 'Đang xử lý'),
         ('done', 'Đã hoàn thành'),
         ('cancel', 'Hủy bỏ'),
-    ], string='Trạng thái', default='Chờ thực hiện')
+    ], string='Trạng thái', default='peding')
 
     note = fields.Char(string='Ghi chú kỹ thuật')
