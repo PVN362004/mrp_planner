@@ -10,7 +10,7 @@
                         <label for="product_name" string="Tên hàng"/>
                         <h1>
                             <field name="product_name"
-                                placeholder="VD: Pin"
+                                placeholder="VD: Ấm siêu tốc / Pin"
                                 default_focus="1"
                                 options="{'line_breaks': False}"
                                 class="w-100 text-break"/>
@@ -19,15 +19,15 @@
                     <group>
                         <group>
                             <field name="product_code"/>
+                            <field name="company"/>
                         </group>
                         <group>
                             <field name="product_quantity"/>
-                            <field name="company"/>
+                            <field name="product_type" widget="radio"/>
                         </group>
                     </group>
                     <group>
-                        <field name="product_type" widgets="radio"/>
-                        <field name="product_discription"/>
+                        <field name="product_description"/>
                     </group>
                 </sheet>
             </form>
@@ -38,12 +38,12 @@
         <field name="name">product.planner.list</field>
         <field name="model">product.planner</field>
         <field name="arch" type="xml">
-            <list string="Nhập thông tin sản phẩm">
-                <field name="product_code" string="Mã hàng" width="100px"/>
+            <list string="Danh sách sản phẩm">
+                <field name="product_code" string="Mã hàng" width="120px"/>
                 <field name="product_name" string="Tên hàng"/>
                 <field name="company" string="Tên công ty"/>
                 <field name="product_type" string="Loại sản phẩm"/>
-                <field name="product_discription" string="Mô tả sản phẩm"/>
+                <field name="product_description" string="Mô tả"/>
                 <field name="product_quantity" string="Số lượng đơn"/>
             </list>
         </field>
@@ -51,11 +51,11 @@
 
     <record id="action_product_list" model="ir.actions.act_window">
         <field name="name">Nhập thông tin sản phẩm</field>
-        <field name="res_model">finished.product</field>
+        <field name="res_model">product.planner</field>
         <field name="view_mode">list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                    (0, 0, {'view_mode': 'list', 'view_id': ref('view_finished_product_list')}),
-                    (0, 0, {'view_mode': 'form', 'view_id': ref('view_finished_product_form')}),
-                ]"/>
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_product_list_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_list_form')}),
+        ]"/>
     </record>
 </odoo>

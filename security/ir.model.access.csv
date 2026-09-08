@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_finished_product_user,finished.product.user,model_finished_product,base.group_user,1,1,1,1
+access_product_planner_user,product.planner.user,model_product_planner,base.group_user,1,1,1,1
+access_product_bom_user,product.bom.user,model_product_bom,base.group_user,1,1,1,1
+access_product_order_user,product.order.user,model_product_order,base.group_user,1,1,1,1

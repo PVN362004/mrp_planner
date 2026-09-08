@@ -8,7 +8,10 @@
     'depends': ['base', 'product', 'web'],
     'data': [
         'security/ir.model.access.csv',
-        'views/readonly_menu.xml',
+        'views/product_list.xml',
+        'views/bom_views.xml',
+        'views/work_order.xml',
+        'views/menu.xml',
     ],
     'installable': True,
     'application': True,

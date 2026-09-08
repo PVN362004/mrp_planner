@@ -1,67 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_work_order_form" model="ir.ui.view">
+    <!-- 1. FORM VIEW (Xem và sửa chi tiết 1 Work Order) -->
+    <record id="view_product_order_form" model="ir.ui.view">
         <field name="name">product.order.form</field>
         <field name="model">product.order</field>
         <field name="arch" type="xml">
-            <form string="Lệnh sản xuất">
+            <form string="Lệnh làm việc (Work Order)">
+                <header>
+                    <field name="status" widget="statusbar" statusbar_visible="pending,in_progress,done"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="product_name" string="Tên hàng"/>
+                        <label for="name" string="Mã / Tên công đoạn"/>
                         <h1>
-                            <field name="product_name"
-                                placeholder="VD: Pin"
-                                default_focus="1"
-                                options="{'line_breaks': False}"
-                                class="w-100 text-break"/>
+                            <field name="name" placeholder="VD: WO-Dập vỏ / WO-Lắp ráp" default_focus="1"/>
                         </h1>
                     </div>
                     <group>
-                        <group>
-                            <field name="product_code"/>
-                            <field name="customer_name"/>
-                            <field name="delivery_date"/>
+                        <group string="Sản phẩm liên quan">
+                            <field name="planner_id" string="Sản phẩm"/>
+                            <field name="product_code" string="Mã hàng"/>
+                            <field name="product_name" string="Tên hàng"/>
+                            <field name="bom" string="Định mức BoM"/>
                         </group>
-                        <group>
-                            <field name="date_finished"/>
-                            <field name="manufacturing_date"/>
+                        <group string="Kế hoạch thực hiện">
+                            <field name="stage" string="Công đoạn"/>
+                            <field name="quantity" string="Số lượng làm"/>
                         </group>
-                    </group>
-                    <group>
-                        <field name="note"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
-    
-    <record id="view_work_order_list" model="ir.ui.view">
-        <field name="name">product.order.list</field>
+    <record id="view_product_order_tree" model="ir.ui.view">
+        <field name="name">product.order.tree</field>
         <field name="model">product.order</field>
         <field name="arch" type="xml">
-            <list string="Lệnh sản xuất">
-                <field name="product_code" string="Mã hàng" width="100px"/>
-                <field name="product_name" string="Tên hàng"/>
-                <field name="customer_name" string="Khách hàng"/>
-                <field name="manufacturing_date" string="Ngày sản xuất" width="150px"/>
-                <field name="delivery_date" string="Ngày giao" width="140px"/>
-                <field name="date_finished" string="Ngày nhập" width="120px"/>
-                <field name="note" string="Ghi chú khác"/>
+            <list string="Danh sách Work Orders" decoration-info="status == 'pending'" decoration-warning="status == 'in_progress'" decoration-success="status == 'done'">
+                <field name="name" string="Mã WO"/>
+                <field name="planner_id" string="Sản phẩm"/>
+                <field name="product_code" string="Mã hàng"/>
+                <field name="stage" string="Công đoạn"/>
+                <field name="quantity" string="SL"/>
+                <field name="bom" string="BoM"/>
+                <field name="status" widget="badge"
+                       decoration-info="status == 'pending'"
+                       decoration-warning="status == 'in_progress'"
+                       decoration-success="status == 'done'"/>
             </list>
         </field>
     </record>
 
-    <record id="action_work_order" model="ir.actions.act_window">
-        <field name="name">Nhập lệnh sản xuất</field>
+    <record id="action_product_order" model="ir.actions.act_window">
+        <field name="name">Lệnh làm việc (Work Orders)</field>
         <field name="res_model">product.order</field>
         <field name="view_mode">list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                    (0, 0, {'view_mode': 'list', 'view_id': ref('view_work_order_list')}),
-                    (0, 0, {'view_mode': 'form', 'view_id': ref('view_work_order_form')}),
-                ]"/>
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_product_order_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_order_form')}),
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo Lệnh làm việc (Work Order) đầu tiên của bạn!
+            </p>
+        </field>
     </record>
-
-
-    
-
 </odoo>

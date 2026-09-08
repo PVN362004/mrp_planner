@@ -35,10 +35,10 @@ class ProductOrder(models.Model):
     duration_expected = fields.Float(string='Thời gian dự kiến (phút)', default=15.0)
 
     status = fields.Selection([
-        ('Chờ thực hiện'),
-        ('Đang xử lý'),
-        ('Đã hoàn thành'),
-        ('Hủy bỏ')
+        ('pending', 'Chờ thực hiện'),
+        ('in_progress', 'Đang xử lý'),
+        ('done', 'Đã hoàn thành'),
+        ('cancel', 'Hủy bỏ'),
     ], string='Trạng thái', default='Chờ thực hiện')
 
     note = fields.Char(string='Ghi chú kỹ thuật')
