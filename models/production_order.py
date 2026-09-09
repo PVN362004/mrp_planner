@@ -5,7 +5,7 @@ class ProductionOrder(models.Model):
     _description = 'Lệnh sản xuất tùy chỉnh'
     _rec_name = 'name'
 
-    name = fields.Char(string='Mã Lệnh Sản Xuất', required=True, default='LSX/2026/001')
+    mo_code = fields.Char(string='Mã Lệnh Sản Xuất', required=True, default='LSX/2026/001')
     product_name = fields.Char(string='Tên sản phẩm', required=True)
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
     

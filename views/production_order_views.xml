@@ -15,12 +15,12 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"/>
+                            <field name="product_name"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="product_name"/>
+                            <field name="mo_code"/>
                         </group>
                         <group>
                             <field name="product_qty"/>
