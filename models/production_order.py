@@ -26,6 +26,7 @@ class ProductionOrder(models.Model):
     product_name = fields.Char(string='Tên sản phẩm', required=True)
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
     customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='restrict')
+    sale_cost = fields.Integer(string='Giá bán', required=True, default=1)
     
     state = fields.Selection([
         ('draft', 'Nháp'),
@@ -39,9 +40,6 @@ class ProductionOrder(models.Model):
         for rec in self:
             rec.state = 'confirmed'
 
-    def action_done(self):
-            for rec in self:
-                rec.state = 'done'
 
     def action_cancel(self):
             for rec in self:
@@ -53,6 +51,52 @@ class ProductionOrder(models.Model):
 
 
     line_ids = fields.One2many('production.order.line', 'order_id', string='Thành phần linh kiện')
+
+
+    def action_done(self):
+        for rec in self:
+            rec.state = 'done'
+            
+            # 1. Tìm hoặc tự động tạo kho chính
+            target_stock = self.env['production.stock'].search([], limit=1)
+            if not target_stock:
+                target_stock = self.env['production.stock'].create({
+                    'stock_name': 'Kho Thành Phẩm Chính'
+                })
+            
+            # 2. Cộng sản phẩm hoàn thành vào kho
+            stock_line = self.env['production.stock.line'].search([
+                ('stock_id', '=', target_stock.id),
+                ('product_name', '=', rec.product_name)
+            ], limit=1)
+            
+            if stock_line:
+                stock_line.quantity += rec.product_qty
+            else:
+                self.env['production.stock.line'].create({
+                    'stock_id': target_stock.id,
+                    'product_name': rec.product_name,
+                    'quantity': rec.product_qty,
+                })
+
+            # 3. Trừ linh kiện đã dùng khỏi kho
+            for line in rec.line_ids:
+                component_name = line.sub_component_id.component_name
+                
+                component_stock_line = self.env['production.stock.line'].search([
+                    ('stock_id', '=', target_stock.id),
+                    ('product_name', '=', component_name)
+                ], limit=1)
+                
+                if component_stock_line:
+                    component_stock_line.quantity -= line.quantity
+                else:
+                    self.env['production.stock.line'].create({
+                        'stock_id': target_stock.id,
+                        'product_name': component_name,
+                        'quantity': -line.quantity,
+                    })
+
 
 class ProductionOrderLine(models.Model):
     _name = 'production.order.line'
@@ -67,6 +111,6 @@ class ProductionOrderLine(models.Model):
 class CustomerPartner(models.Model):
     _name = 'customer.partner'
     _description = 'Customer Partner Model'
-    _rec_nmae = "customer_name"
+    _rec_name = "customer_name"
 
-    name = fields.Char(string='Ten khach hang', required=True)
+    customer_name = fields.Char(string='Ten khach hang', required=True)

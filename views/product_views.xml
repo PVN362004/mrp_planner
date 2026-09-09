@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- ============================================== -->
+    <!-- 1. VIEWS CHO KHO SẢN PHẨM (SUB COMPONENT)      -->
+    <!-- ============================================== -->
     <record id="view_sub_component_form" model="ir.ui.view">
         <field name="name">sub.component.form</field>
         <field name="model">sub.component</field>
         <field name="arch" type="xml">
-            <form string="Nhập thông tin sản phẩm">
+            <form string="Kho sản phẩm">
                 <sheet>
                     <div class="oe_title">
                         <label for="component_name" string="Tên hàng"/>
@@ -40,7 +43,7 @@
         <field name="name">sub.component.list</field>
         <field name="model">sub.component</field>
         <field name="arch" type="xml">
-            <list string="Thông tin sản phẩm">
+            <list string="Kho sản phẩm">
                 <field name="component_id" string="Mã sản phẩm" width="100px"/>
                 <field name="component_name" string="Tên sản phẩm"/>
                 <field name="component_method" string="Phương thức sản xuất"/>
@@ -54,7 +57,7 @@
     </record>
 
     <record id="action_sub_component" model="ir.actions.act_window">
-        <field name="name">Nhập thông tin sản phẩm</field>
+        <field name="name">Kho sản phẩm</field>
         <field name="res_model">sub.component</field>
         <field name="view_mode">list,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
@@ -63,7 +66,57 @@
                 ]"/>
     </record>
 
+    <!-- ============================================== -->
+    <!-- 2. VIEWS CHO KHO SẢN XUẤT (PRODUCTION STOCK)   -->
+    <!-- ============================================== -->
+    <!-- Form View cho Kho -->
+    <record id="view_production_stock_form" model="ir.ui.view">
+        <field name="name">production.stock.form</field>
+        <field name="model">production.stock</field>
+        <field name="arch" type="xml">
+            <form string="Kho Sản Xuất">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="stock_name" placeholder="Tên kho..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="location_code"/>
+                    </group>
+                    <notebook>
+                        <page string="Danh sách sản phẩm tồn kho">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_name"/>
+                                    <field name="quantity" sum="Tổng số lượng"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-    
+    <!-- List View cho Kho -->
+    <record id="view_production_stock_list" model="ir.ui.view">
+        <field name="name">production.stock.list</field>
+        <field name="model">production.stock</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách Kho">
+                <field name="stock_name"/>
+                <field name="location_code"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action Window cho Kho -->
+    <record id="action_production_stock" model="ir.actions.act_window">
+        <field name="name">Kho Sản Xuất</field>
+        <field name="res_model">production.stock</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
 
 </odoo>

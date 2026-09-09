@@ -23,8 +23,16 @@
               sequence="10"/>
 
     <menuitem id="menu_sub_component" 
-              name="Thông tin sản phẩm" 
+              name="Kho sản phẩm" 
               parent="menu_mrp_planner_root" 
               action="action_sub_component" 
               sequence="20"/>
+
+    <menuitem id="menu_production_stock"
+              name="Quản lý tồn kho"
+              parent="menu_mrp_planner_root" 
+              action="action_production_stock"
+              sequence="40"/>
+
+
 </odoo>
