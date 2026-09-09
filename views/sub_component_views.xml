@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sub_component_form" model="ir.ui.view">
+        <field name="name">sub.component.form</field>
+        <field name="model">sub.component</field>
+        <field name="arch" type="xml">
+            <form string="Nhập thông tin sản phẩm">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="component_name" string="Tên hàng"/>
+                        <h1>
+                            <field name="component_name"
+                                placeholder="VD: Pin"
+                                default_focus="1"
+                                options="{'line_breaks': False}"
+                                class="w-100 text-break"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="component_id"/>
+                            <field name="quantity"/>
+                        </group>
+                        <group>
+                            <field name="component_method"/>
+                            <field name="company_name"/>
+                            <field name="buying_cost"/>
+                            <field name="sale_cost"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_sub_component_list" model="ir.ui.view">
+        <field name="name">sub.component.list</field>
+        <field name="model">sub.component</field>
+        <field name="arch" type="xml">
+            <list string="Thông tin sản phẩm">
+                <field name="component_id" string="Mã sản phẩm" width="100px"/>
+                <field name="component_name" string="Tên sản phẩm"/>
+                <field name="component_method" string="Phương thức sản xuất"/>
+                <field name="company_name" string="Tên công ty" width="150px"/>
+                <field name="buying_cost" string="Giá mua" width="140px"/>
+                <field name="sale_cost" string="Giá bán'" width="140px"/>
+                <field name="quantity" string="Số lượng" width="120px"/>
+                <field name="note" string="Ghi chú khác"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_sub_component" model="ir.actions.act_window">
+        <field name="name">Nhập thông tin sản phẩm</field>
+        <field name="res_model">sub.component</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                    (0, 0, {'view_mode': 'list', 'view_id': ref('view_sub_component_list')}),
+                    (0, 0, {'view_mode': 'form', 'view_id': ref('view_sub_component_form')}),
+                ]"/>
+    </record>
+
+
+    
+
+</odoo>

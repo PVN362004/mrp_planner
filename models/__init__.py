@@ -1,3 +1,2 @@
-from . import product_planner
-from . import product_bom
-from . import product_order
+from . import sale_order_inherit
+from . import sub_component
