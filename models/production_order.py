@@ -1,13 +1,31 @@
-from odoo import models, fields
+from odoo import api, models, fields
+from datetime import datetime
 
 class ProductionOrder(models.Model):
     _name = 'production.order'
     _description = 'Lệnh sản xuất tùy chỉnh'
-    _rec_name = 'name'
+    _rec_name = 'mo_id'
 
-    mo_code = fields.Char(string='Mã Lệnh Sản Xuất', required=True, default='LSX/2026/001')
+    def _default_mo_id(self):
+        today_str = datetime.now().strftime('%d%m%y')
+        prefix = f"SP{today_str}"
+        last_record = self.env['production.order'].search([('mo_id', 'like', f"{prefix}%")], order='id desc', limit=1)
+        
+        if last_record and last_record.mo_id.startswith(prefix):
+            try:
+                last_seq = int(last_record.mo_id[len(prefix):])
+                new_seq = last_seq + 1
+            except ValueError:
+                new_seq = 1
+        else:
+            new_seq = 1
+            
+        return f"{prefix}{new_seq:03d}"
+
+    mo_id = fields.Char(string='Mã Lệnh Sản Xuất', required=True, copy=False, readonly=True, default=_default_mo_id)
     product_name = fields.Char(string='Tên sản phẩm', required=True)
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
+    customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='restrict')
     
     state = fields.Selection([
         ('draft', 'Nháp'),
@@ -16,6 +34,7 @@ class ProductionOrder(models.Model):
         ('cancel', 'Đã hủy')
     ], string='Trạng thái', default='draft')
 
+    
     def action_confirm(self):
         for rec in self:
             rec.state = 'confirmed'
@@ -43,3 +62,11 @@ class ProductionOrderLine(models.Model):
     sub_component_id = fields.Many2one('sub.component', string='Linh kiện', required=True)
     quantity = fields.Integer(string='Số lượng', default=1, required=True)
     note = fields.Char(string='Ghi chú')
+
+
+class CustomerPartner(models.Model):
+    _name = 'customer.partner'
+    _description = 'Customer Partner Model'
+    _rec_nmae = "customer_name"
+
+    name = fields.Char(string='Ten khach hang', required=True)

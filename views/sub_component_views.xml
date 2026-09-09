@@ -46,7 +46,7 @@
                 <field name="component_method" string="Phương thức sản xuất"/>
                 <field name="company_name" string="Tên công ty" width="150px"/>
                 <field name="buying_cost" string="Giá mua" width="140px"/>
-                <field name="sale_cost" string="Giá bán'" width="140px"/>
+                <field name="sale_cost" string="Giá bán" width="140px"/>
                 <field name="quantity" string="Số lượng" width="120px"/>
                 <field name="note" string="Ghi chú khác"/>
             </list>

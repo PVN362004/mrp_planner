@@ -4,3 +4,4 @@ access_production_method_wizard_line,production.method.wizard.line,model_product
 access_sub_component,sub.component,model_sub_component,base.group_user,1,1,1,1
 access_production_order,production.order,model_production_order,base.group_user,1,1,1,1
 access_production_order_line,production.order.line,model_production_order_line,base.group_user,1,1,1,1
+access_customer_partner_all,customer.partner,model_customer_partner,base.group_user,1,1,1,1
