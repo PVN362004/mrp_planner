@@ -57,45 +57,32 @@ class ProductionOrder(models.Model):
         for rec in self:
             rec.state = 'done'
             
-            # 1. Tìm hoặc tự động tạo kho chính
-            target_stock = self.env['production.stock'].search([], limit=1)
-            if not target_stock:
-                target_stock = self.env['production.stock'].create({
-                    'stock_name': 'Kho Thành Phẩm Chính'
-                })
-            
-            # 2. Cộng sản phẩm hoàn thành vào kho
-            stock_line = self.env['production.stock.line'].search([
-                ('stock_id', '=', target_stock.id),
-                ('product_name', '=', rec.product_name)
+            # ==============================================================
+            # 1. CỘNG THÀNH PHẨM VÀO KHO (Bảng sub.component)
+            # ==============================================================
+            finished_product = self.env['sub.component'].search([
+                ('component_name', '=', rec.product_name)
             ], limit=1)
             
-            if stock_line:
-                stock_line.quantity += rec.product_qty
+            if finished_product:
+                # Đã có thì cộng dồn số lượng
+                finished_product.quantity += rec.product_qty
             else:
-                self.env['production.stock.line'].create({
-                    'stock_id': target_stock.id,
-                    'product_name': rec.product_name,
+                # Chưa có thì tạo thành phẩm mới trong Kho sản phẩm
+                self.env['sub.component'].create({
+                    'component_name': rec.product_name,
+                    'component_method': 'in_house', 
                     'quantity': rec.product_qty,
+                    'sale_cost': rec.sale_cost,
                 })
 
-            # 3. Trừ linh kiện đã dùng khỏi kho
+            # ==============================================================
+            # 2. TRỪ LINH KIỆN ĐÃ SỬ DỤNG
+            # ==============================================================
             for line in rec.line_ids:
-                component_name = line.sub_component_id.component_name
-                
-                component_stock_line = self.env['production.stock.line'].search([
-                    ('stock_id', '=', target_stock.id),
-                    ('product_name', '=', component_name)
-                ], limit=1)
-                
-                if component_stock_line:
-                    component_stock_line.quantity -= line.quantity
-                else:
-                    self.env['production.stock.line'].create({
-                        'stock_id': target_stock.id,
-                        'product_name': component_name,
-                        'quantity': -line.quantity,
-                    })
+                if line.sub_component_id:
+                    # Trừ trực tiếp số lượng linh kiện trong Kho sản phẩm
+                    line.sub_component_id.quantity -= line.quantity
 
 
 class ProductionOrderLine(models.Model):
