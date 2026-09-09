@@ -9,67 +9,55 @@ class ProductionMethodWizard(models.TransientModel):
     line_ids = fields.One2many('production.method.wizard.line', 'wizard_id', string='Chi tiết linh kiện')
 
     def action_confirm_production(self):
-        po_dict = {} 
-
+        self.ensure_one()
+        
+        if not self.line_ids:
+            raise UserError("Vui lòng thêm ít nhất một linh kiện vào phương án sản xuất!")
+        
+        order_lines_vals = []
         for line in self.line_ids:
-            qty_to_produce = line.required_qty 
-            if qty_to_produce <= 0:
+            if line.qty_to_produce <= 0:
                 continue
-
-            if line.production_method in ['in_house', 'assembly']:
-                bom = self.env['mrp.bom']._bom_find(product=line.product_id, company_id=self.env.company.id)
-
-                mo_vals = {
-                    'product_id': line.product_id.id,
-                    'product_qty': qty_to_produce,
-                    'product_uom_id': line.product_id.uom_id.id,
-                    'origin': self.order_id.name, 
-                    'company_id': self.env.company.id,
-                }
                 
-                if bom:
-                    mo_vals['bom_id'] = bom.id
-                    
-                mo = self.env['mrp.production'].create(mo_vals)
-                mo._onchange_bom_id() 
+            order_lines_vals.append((0, 0, {
+                'sub_component_id': line.sub_component_id.id,
+                'quantity': line.qty_to_produce,
+                'note': f"Phương thức: {line.production_method}"
+            }))
 
+        custom_po_vals = {
+            'name': f"LSX/{self.order_id.name or 'Manual'}",
 
-            elif line.production_method == 'outsource':
-                vendor = line.product_id.seller_ids and line.product_id.seller_ids[0].partner_id
-                
-                if not vendor:
-                    raise UserError(f"Sản phẩm {line.product_id.name} chưa được cấu hình Nhà Cung Cấp. Vui lòng vào sản phẩm thiết lập Vendor trước khi tạo lệnh.")
+            'product_name': (
+                f"Theo đơn hàng {self.order_id.name}"
+                if self.order_id.name
+                else "Sản xuất thủ công"
+            ),
 
-                if vendor.id not in po_dict:
-                    po_dict[vendor.id] = []
+            'product_qty': 1,
 
-                po_dict[vendor.id].append((0, 0, {
-                    'product_id': line.product_id.id,
-                    'name': line.product_id.name,
-                    'product_qty': qty_to_produce,
-                    'price_unit': line.product_id.standard_price,
-                    'product_uom': line.product_id.uom_po_id.id or line.product_id.uom_id.id,
-                    'date_planned': fields.Datetime.now(),
-                }))
-                
-        if po_dict:
-            for vendor_id, po_lines in po_dict.items():
-                po_vals = {
-                    'partner_id': vendor_id,
-                    'origin': self.order_id.name, 
-                    'order_line': po_lines
-                }
-                self.env['purchase.order'].create(po_vals)
+            'state': 'confirmed',
 
-        return {'type': 'ir.actions.act_window_close'}
+            'line_ids': order_lines_vals,
+        }
+        new_custom_order = self.env['production.order'].create(custom_po_vals)
+
+        return {
+            'name': 'Lệnh Sản Xuất Đã Tạo',
+            'type': 'ir.actions.act_window',
+            'res_model': 'custom.production.order',
+            'view_mode': 'form',
+            'res_id': new_custom_order.id,
+            'target': 'current',
+        }
 
 class ProductionMethodWizardLine(models.TransientModel):
     _name = 'production.method.wizard.line'
-    _description = 'Chi tiết linh kiện'
+    _description = 'Chi tiết linh kiện trong Wizard'
 
     wizard_id = fields.Many2one('production.method.wizard')
     
-    sub_component_id = fields.Many2one('sub.component', string='Linh kiện (Tự nhập)', required=True)
+    sub_component_id = fields.Many2one('sub.component', string='Linh kiện', required=True)
     
     qty_to_produce = fields.Float(string='SL Chốt làm/mua', required=True, default=1.0)
     

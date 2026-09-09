@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_production_order_form" model="ir.ui.view">
+        <field name="name">production.order.form</field>
+        <field name="model">production.order</field>
+        <field name="arch" type="xml">
+            <form string="Lệnh Sản Xuất">
+                <header>
+                    <button name="action_confirm" string="Đã xác nhận" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Hoàn thành" type="object" class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Đã hủy" type="object" class="btn-primary" invisible="state in ('done', 'cancel')"/>
+                    <button name="action_draft" string="Nháp" type="object" class="btn-primary" invisible="state != 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,donne"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="product_name"/>
+                        </group>
+                        <group>
+                            <field name="product_qty"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Thành phần linh kiện">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sub_component_id"/>
+                                    <field name="quantity" width="150px"/>
+                                    <field name="note" width="250px"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_production_order_list" model="ir.ui.view">
+        <field name="name">production.order.list</field>
+        <field name="model">production.order</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách Lệnh Sản Xuất">
+                <field name="name"/>
+                <field name="product_name"/>
+                <field name="state" widget="badge" width="250px"/>
+                <field name="product_qty" width="150px"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_production_order" model="ir.actions.act_window">
+        <field name="name">Lệnh Sản Xuất</field>
+        <field name="res_model">production.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

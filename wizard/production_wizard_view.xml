@@ -4,21 +4,18 @@
         <field name="name">production.method.wizard.form</field>
         <field name="model">production.method.wizard</field>
         <field name="arch" type="xml">
-            <form string="Cấu hình Sản Xuất">
+            <form string="Cấu hình Phương Án Sản Xuất">
                 <group>
                     <field name="order_id" readonly="1"/>
                 </group>
-                <!--
                 <field name="line_ids">
-                    <list editable="bottom" create="0">
-                        <field name="product_id"/>
-                        <field name="required_qty"/>
-                        <field name="available_qty"/>
+                    <list editable="bottom">
+                        <field name="sub_component_id"/>
                         <field name="qty_to_produce"/>
                         <field name="production_method"/>
                     </list>
                 </field>
-                -->
+
                 <footer>
                     <button name="action_confirm_production" string="Xác nhận &amp; Tạo Lệnh" type="object" class="btn-primary"/>
                     <button string="Hủy" class="btn-secondary" special="cancel"/>

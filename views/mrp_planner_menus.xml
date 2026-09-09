@@ -12,15 +12,14 @@
         </field>
     </record>
 
-
     <menuitem id="menu_mrp_planner_root" 
               name="Kế Hoạch SX" 
               sequence="10" />
 
-    <menuitem id="menu_mrp_planner_orders" 
-              name="Đơn hàng chờ SX" 
+    <menuitem id="menu_production_order" 
+              name="Đơn Sản Xuất" 
               parent="menu_mrp_planner_root" 
-              action="action_mrp_planner_orders" 
+              action="action_production_order" 
               sequence="10"/>
 
     <menuitem id="menu_sub_component" 

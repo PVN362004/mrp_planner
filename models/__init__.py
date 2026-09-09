@@ -1,2 +1,2 @@
-from . import sale_order_inherit
+from . import production_order
 from . import sub_component

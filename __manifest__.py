@@ -9,7 +9,7 @@
     'data': [
         'security/ir.model.access.csv',
         'wizard/production_wizard_view.xml',
-        'views/sale_order_views.xml',
+        'views/production_order_views.xml',
         'views/sub_component_views.xml',
         'views/mrp_planner_menus.xml',
     ],
