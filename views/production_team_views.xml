@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- LIST -->
+    <record id="view_production_team_list" model="ir.ui.view">
+        <field name="name">production.team.list</field>
+        <field name="model">production.team</field>
+
+        <field name="arch" type="xml">
+            <list string="Nhóm sản xuất">
+
+                <field name="name"/>
+                <field name="leader_id"/>
+                <field name="member_ids" widget="many2many_tags"/>
+                <field name="active"/>
+
+            </list>
+        </field>
+    </record>
+
+
+    <!-- FORM -->
+    <record id="view_production_team_form" model="ir.ui.view">
+        <field name="name">production.team.form</field>
+        <field name="model">production.team</field>
+
+        <field name="arch" type="xml">
+            <form string="Nhóm sản xuất">
+
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"
+                                   placeholder="VD: Nhóm lắp ráp"/>
+                        </h1>
+                    </div>
+
+                    <group>
+
+                        <group>
+                            <field name="leader_id"/>
+                            <field name="active"/>
+                        </group>
+
+                        <group>
+                            <field name="member_ids"
+                                   widget="many2many_tags"/>
+                        </group>
+
+                    </group>
+
+                    <group>
+                        <field name="note"/>
+                    </group>
+
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ACTION -->
+    <record id="action_production_team" model="ir.actions.act_window">
+
+        <field name="name">Nhóm sản xuất</field>
+        <field name="res_model">production.team</field>
+        <field name="view_mode">list,form</field>
+
+    </record>
+
+</odoo>

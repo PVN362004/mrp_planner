@@ -30,6 +30,13 @@ class ManufacturingOrder(models.Model):
             required=True
         )
     
+    product_color = fields.Selection([
+        ('black', 'Đen'),
+        ('blue', 'Xanh dương'),
+        ('white', 'Trắng'),
+        ('green', 'Xanh lá'),
+    ], string='Chọn màu sản phẩm', default='black')
+
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
     customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='set null')
     sale_cost = fields.Integer(string='Giá bán', required=True, default=1)
@@ -77,7 +84,6 @@ class ManufacturingOrder(models.Model):
                 if line.sub_component_id:
                     line.sub_component_id.quantity -= line.quantity
 
-        self.unlink()
         return {
                 'type': 'ir.actions.act_window',
                 'name': 'Lệnh sản xuất',

@@ -51,6 +51,7 @@
                         <group>
                             <field name="mo_id"/>
                             <field name="customer_name"/>
+                            <field name="product_color" widget="radio"/>
                         </group>
                         <group>
                             <field name="product_qty"/>
@@ -64,6 +65,21 @@
                                     <field name="sub_component_id"/>
                                     <field name="note" width="250px"/>
                                     <field name="quantity" width="150px"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Điều phối sản xuất">
+                            <field name="operation_ids">
+                                <list editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="component_id"/>
+                                    <field name="quantity"/>
+                                    <field name="team_id"/>
+                                    <field name="machine_id"/>
+                                    <field name="state"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
                                 </list>
                             </field>
                         </page>

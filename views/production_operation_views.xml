@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_production_operation_list" model="ir.ui.view">
+
+        <field name="name">production.operation.list</field>
+        <field name="model">production.operation</field>
+
+        <field name="arch" type="xml">
+
+            <list string="Điều phối sản xuất">
+
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="order_id"/>
+                <field name="component_id"/>
+                <field name="quantity"/>
+                <field name="team_id"/>
+                <field name="machine_id"/>
+                <field name="state"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+
+            </list>
+
+        </field>
+
+    </record>
+
+
+    <record id="view_production_operation_form" model="ir.ui.view">
+
+        <field name="name">production.operation.form</field>
+        <field name="model">production.operation</field>
+
+        <field name="arch" type="xml">
+
+            <form string="Công đoạn sản xuất">
+
+                <header>
+
+                    <button name="action_ready"
+                            type="object"
+                            string="Sẵn sàng"
+                            class="btn-secondary"/>
+
+                    <button name="action_start"
+                            type="object"
+                            string="Bắt đầu"
+                            class="btn-primary"/>
+
+                    <button name="action_done"
+                            type="object"
+                            string="Hoàn thành"
+                            class="btn-primary"/>
+
+                    <button name="action_cancel"
+                            type="object"
+                            string="Hủy"/>
+
+                    <button name="action_reset"
+                            type="object"
+                            string="Đặt lại"/>
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="pending,ready,progress,done"/>
+
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"
+                                   placeholder="VD: Cắt linh kiện"/>
+                        </h1>
+                    </div>
+
+                    <group>
+
+                        <group>
+
+                            <field name="order_id"/>
+                            <field name="sequence"/>
+                            <field name="component_id"/>
+                            <field name="quantity"/>
+
+                        </group>
+
+                        <group>
+
+                            <field name="team_id"/>
+                            <field name="machine_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+
+                        </group>
+
+                    </group>
+
+                    <group>
+                        <field name="note"/>
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+
+    </record>
+
+
+    <record id="action_production_operation"
+            model="ir.actions.act_window">
+
+        <field name="name">Điều phối sản xuất</field>
+        <field name="res_model">production.operation</field>
+        <field name="view_mode">list,form</field>
+
+    </record>
+
+</odoo>
