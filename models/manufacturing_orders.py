@@ -9,7 +9,7 @@ class ManufacturingOrder(models.Model):
     def _default_mo_id(self):
         today_str = datetime.now().strftime('%d%m%y')
         prefix = f"SP{today_str}"
-        last_record = self.env['production.order'].search([('mo_id', 'like', f"{prefix}%")], order='id desc', limit=1)
+        last_record = self.env['manufacturing.order'].search([('mo_id', 'like', f"{prefix}%")], order='id desc', limit=1)
         
         if last_record and last_record.mo_id.startswith(prefix):
             try:
@@ -51,7 +51,7 @@ class ManufacturingOrder(models.Model):
                 rec.state = 'draft'
 
 
-    line_ids = fields.One2many('production.order.line', 'order_id', string='Thành phần linh kiện')
+    line_ids = fields.One2many('manufacturing.order.line', 'order_id', string='Thành phần linh kiện')
 
     def action_progress(self):
             for rec in self:
@@ -84,7 +84,7 @@ class ManufacturingOrder(models.Model):
         return {
                 'type': 'ir.actions.act_window',
                 'name': 'Lệnh sản xuất',
-                'res_model': 'production.order',
+                'res_model': 'manufacturing.order',
                 'view_mode': 'list,form',
                 'target': 'current',
             }

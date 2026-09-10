@@ -88,7 +88,7 @@
 
     <record id="action_manufacturing_order" model="ir.actions.act_window">
         <field name="name">Lệnh Sản Xuất</field>
-        <field name="res_model">production.order</field>
+        <field name="res_model">manufacturing.order</field>
         <field name="view_mode">list,form</field>
     </record>
 </odoo>
