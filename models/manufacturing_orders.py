@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import api, models, fields
 from datetime import datetime
 
 class ManufacturingOrder(models.Model):
@@ -23,7 +23,13 @@ class ManufacturingOrder(models.Model):
         return f"{prefix}{new_seq:03d}"
 
     mo_id = fields.Char(string='Mã Lệnh Sản Xuất', required=True, copy=False, readonly=True, default=_default_mo_id)
-    product_name = fields.Char(string='Tên sản phẩm', required=True)
+
+    product_id = fields.Many2one(
+            'sub.component', 
+            string='Sản phẩm', 
+            required=True
+        )
+    
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
     customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='set null')
     sale_cost = fields.Integer(string='Giá bán', required=True, default=1)
@@ -31,8 +37,8 @@ class ManufacturingOrder(models.Model):
     state = fields.Selection([
         ('draft', 'Nháp'),
         ('confirmed', 'Đã xác nhận'),
-        ('done', 'Hoàn thành'),
         ('progress', 'Đang thực hiện'),
+        ('done', 'Hoàn thành'),
         ('cancel', 'Đã hủy')
     ], string='Trạng thái', default='draft')
 
@@ -51,8 +57,6 @@ class ManufacturingOrder(models.Model):
                 rec.state = 'draft'
 
 
-    line_ids = fields.One2many('manufacturing.order.line', 'order_id', string='Thành phần linh kiện')
-
     def action_progress(self):
             for rec in self:
                 rec.state = 'progress'
@@ -61,25 +65,18 @@ class ManufacturingOrder(models.Model):
     def action_done(self):
         for rec in self:
             rec.state = 'done'
-            finished_product = self.env['sub.component'].search([
-                ('component_name', '=', rec.product_name)
-            ], limit=1)
             
-            if finished_product:
-                finished_product.quantity += rec.product_qty
-                finished_product.product_type = 'product'
-            else:
-                self.env['sub.component'].create({
-                    'component_name': rec.product_name,
-                    'component_method': 'in_house', 
-                    'quantity': rec.product_qty,
-                    'sale_cost': rec.sale_cost,
-                    'product_type': 'product',
-                })
+            # 1. Cập nhật trực tiếp vào bản ghi sản phẩm đã chọn
+            if rec.product_id:
+                rec.product_id.quantity += rec.product_qty
+                rec.product_id.product_type = 'product'
+                rec.product_id.sale_cost = rec.sale_cost
 
+            # 2. Trừ linh kiện đã sử dụng
             for line in rec.line_ids:
                 if line.sub_component_id:
                     line.sub_component_id.quantity -= line.quantity
+
         self.unlink()
         return {
                 'type': 'ir.actions.act_window',
@@ -88,6 +85,30 @@ class ManufacturingOrder(models.Model):
                 'view_mode': 'list,form',
                 'target': 'current',
             }
+
+    bom_id = fields.Many2one('production.bom', string='Định mức (BOM)')
+    line_ids = fields.One2many('manufacturing.order.line', 'order_id', string='Thành phần linh kiện')
+
+    @api.onchange('bom_id', 'product_qty')
+    def _onchange_bom_id(self):
+        for rec in self:
+            lines = [(5, 0, 0)]
+
+            if rec.bom_id:
+                bom_qty = max(rec.bom_id.quantity, 1)
+                ratio = rec.product_qty / bom_qty
+
+                for bom_line in rec.bom_id.bom_line_ids:
+
+                    lines.append((0, 0, {
+                        'sub_component_id': bom_line.sub_component_id.id,
+                        'quantity': int(bom_line.quantity * ratio), 
+                        'note': bom_line.note
+                    }))
+
+            rec.line_ids = lines
+         
+
 
 
 class ManufacturingOrderLine(models.Model):

@@ -3,8 +3,8 @@ from odoo import api, models, fields
 class ProductBom(models.Model):
     _name = 'production.bom'
     _description = 'Bom cho lệnh sản xuất'
-    
     _rec_name = 'product_id'
+
     product_id = fields.Many2one(
         'sub.component', 
         string='Sản phẩm', 
@@ -16,6 +16,7 @@ class ProductBom(models.Model):
     
     bom_type = fields.Selection([
         ('manufacture', 'Tự sản xuất'),
+        ('assembly', 'Chỉ lắp ráp'),
         ('subcontracting', 'Thuê ngoài'),
     ], string='Loại BOM', default='manufacture')
     
@@ -26,9 +27,8 @@ class ProductBom(models.Model):
     @api.onchange('product_id')
     def _onchange_product_id(self):
         for rec in self:
-            # Nếu sản phẩm được chọn đã có sẵn tên công ty bên kho, thì điền tự động vào BOM
-            if rec.product_id and rec.product_id.company_name:
-                rec.company_name = rec.product_id.company_name
+            if rec.product_id and rec.product_id.company_id:
+                rec.company_id = rec.product_id.company_id
 
 
 class ProductBomLine(models.Model):

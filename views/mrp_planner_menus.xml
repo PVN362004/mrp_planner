@@ -22,7 +22,7 @@
               action="action_manufacturing_order" 
               sequence="20"/>
     <menuitem id="menu_sub_component_root" 
-              name="Kho sản phẩm" 
+              name="Sản phẩm" 
               parent="menu_mrp_planner_root"
               sequence="40"/>
     <menuitem id="menu_sub_component" 
