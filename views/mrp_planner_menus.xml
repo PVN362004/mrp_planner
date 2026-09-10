@@ -20,14 +20,22 @@
               name="Đơn Sản Xuất" 
               parent="menu_mrp_planner_root" 
               action="action_production_order" 
+              sequence="20"/>
+    <menuitem id="menu_sub_component_root" 
+              name="Kho sản phẩm" 
+              parent="menu_mrp_planner_root"
+              sequence="40"/>
+    <menuitem id="menu_sub_component" 
+              name="Sản phẩm" 
+              parent="menu_sub_component_root" 
+              action="action_sub_component" 
               sequence="10"/>
 
-    <menuitem id="menu_sub_component" 
-              name="Kho sản phẩm" 
-              parent="menu_mrp_planner_root" 
-              action="action_sub_component" 
-              sequence="20"/>
-
+    <menuitem id="menu_production_bom" 
+              name="Định mức nguyên vật liệu BOM" 
+              parent="menu_sub_component_root" 
+              action="action_production_bom" 
+              sequence="30"/>
 
 
 </odoo>

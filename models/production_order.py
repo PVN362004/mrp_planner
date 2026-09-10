@@ -25,7 +25,7 @@ class ProductionOrder(models.Model):
     mo_id = fields.Char(string='Mã Lệnh Sản Xuất', required=True, copy=False, readonly=True, default=_default_mo_id)
     product_name = fields.Char(string='Tên sản phẩm', required=True)
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
-    customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='restrict')
+    customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='set null')
     sale_cost = fields.Integer(string='Giá bán', required=True, default=1)
     
     state = fields.Selection([
@@ -62,17 +62,27 @@ class ProductionOrder(models.Model):
             
             if finished_product:
                 finished_product.quantity += rec.product_qty
+                finished_product.product_type = 'product'
             else:
                 self.env['sub.component'].create({
                     'component_name': rec.product_name,
                     'component_method': 'in_house', 
                     'quantity': rec.product_qty,
                     'sale_cost': rec.sale_cost,
+                    'product_type': 'product',
                 })
 
             for line in rec.line_ids:
                 if line.sub_component_id:
                     line.sub_component_id.quantity -= line.quantity
+        self.unlink()
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Lệnh sản xuất',
+                'res_model': 'production.order',
+                'view_mode': 'list,form',
+                'target': 'current',
+            }
 
 
 class ProductionOrderLine(models.Model):
@@ -90,4 +100,6 @@ class CustomerPartner(models.Model):
     _description = 'Customer Partner Model'
     _rec_name = "customer_name"
 
-    customer_name = fields.Char(string='Ten khach hang', required=True)
+    customer_name = fields.Char(string='Tên khách hàng', required=True)
+    customer_email = fields.Char(string='Email khách hàng')
+    customer_address = fields.Char(string='Địa chỉ của khách hàng')

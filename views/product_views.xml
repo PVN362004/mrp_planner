@@ -20,10 +20,11 @@
                         <group>
                             <field name="component_id"/>
                             <field name="quantity"/>
+                            <field name="product_type"/>
                         </group>
                         <group>
-                            <field name="component_method"/>
-                            <field name="company_name"/>
+                            <field name="component_method" widget="radio" options="{'horizontal': true}"/>
+                            <field name="company_id"/>
                             <field name="buying_cost"/>
                             <field name="sale_cost"/>
                         </group>
@@ -43,8 +44,9 @@
             <list string="Kho sản phẩm">
                 <field name="component_id" string="Mã sản phẩm" width="100px"/>
                 <field name="component_name" string="Tên sản phẩm"/>
+                <field name="product_type"/>
                 <field name="component_method" string="Phương thức sản xuất"/>
-                <field name="company_name" string="Tên công ty" width="150px"/>
+                <field name="company_id" string="Tên công ty" width="150px"/>
                 <field name="buying_cost" string="Giá mua" width="140px"/>
                 <field name="sale_cost" string="Giá bán" width="140px"/>
                 <field name="quantity" string="Số lượng" width="120px"/>

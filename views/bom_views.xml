@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_production_bom_form" model="ir.ui.view">
+        <field name="name">production.bom.form</field>
+        <field name="model">production.bom</field>
+        <field name="arch" type="xml">
+            <form string="Lệnh Sản Xuất">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="product_id" class="oe_edit_only" string="Tên định mức (BOM)"/>
+                        <h1>
+                            <field name="product_id" placeholder="Nhập tên BOM..."/>
+                        </h1>   
+                    </div>
+                    <group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="reference"/>
+                        </group>
+                        <group>
+                            <field name="bom_type" widget="radio"/>
+                            <field name="company_id"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Thành phần linh kiện">
+                            <field name="bom_line_ids">
+                                <list editable="bottom">
+                                    <field name="sub_component_id"/>
+                                    <field name="note" width="250px"/>
+                                    <field name="quantity" width="150px"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_production_bom_list" model="ir.ui.view">
+        <field name="name">production.bom.list</field>
+        <field name="model">production.bom</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách Lệnh Sản Xuất">
+                <field name="product_id"/>
+                <field name="bom_type" width="150px"/>
+                <field name="reference" width="150px"/>
+                <field name="company_id" width="150px"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_production_bom" model="ir.actions.act_window">
+        <field name="name">Định mức nguyên vật liệu (Bill of Materials)</field>
+        <field name="res_model">production.bom</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                    (0, 0, {'view_mode': 'list', 'view_id': ref('view_production_bom_list')}),
+                    (0, 0, {'view_mode': 'form', 'view_id': ref('view_production_bom_form')}),
+                ]"/>
+    </record>
+</odoo>
