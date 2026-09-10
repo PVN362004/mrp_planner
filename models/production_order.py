@@ -56,19 +56,13 @@ class ProductionOrder(models.Model):
     def action_done(self):
         for rec in self:
             rec.state = 'done'
-            
-            # ==============================================================
-            # 1. CỘNG THÀNH PHẨM VÀO KHO (Bảng sub.component)
-            # ==============================================================
             finished_product = self.env['sub.component'].search([
                 ('component_name', '=', rec.product_name)
             ], limit=1)
             
             if finished_product:
-                # Đã có thì cộng dồn số lượng
                 finished_product.quantity += rec.product_qty
             else:
-                # Chưa có thì tạo thành phẩm mới trong Kho sản phẩm
                 self.env['sub.component'].create({
                     'component_name': rec.product_name,
                     'component_method': 'in_house', 
@@ -76,12 +70,8 @@ class ProductionOrder(models.Model):
                     'sale_cost': rec.sale_cost,
                 })
 
-            # ==============================================================
-            # 2. TRỪ LINH KIỆN ĐÃ SỬ DỤNG
-            # ==============================================================
             for line in rec.line_ids:
                 if line.sub_component_id:
-                    # Trừ trực tiếp số lượng linh kiện trong Kho sản phẩm
                     line.sub_component_id.quantity -= line.quantity
 
 
