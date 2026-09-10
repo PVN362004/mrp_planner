@@ -1,3 +1,3 @@
-from . import production_order
+from . import manufacturing_orders
 from . import sub_component
 from . import product_bom

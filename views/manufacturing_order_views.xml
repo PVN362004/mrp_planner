@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_production_order_form" model="ir.ui.view">
-        <field name="name">production.order.form</field>
-        <field name="model">production.order</field>
+    <record id="view_manufacturing_order_form" model="ir.ui.view">
+        <field name="name">manufacturing.order.form</field>
+        <field name="model">manufacturing.order</field>
         <field name="arch" type="xml">
             <form string="Lệnh Sản Xuất">
                 <header>
-                    <button name="action_confirm" string="Đã xác nhận" type="object" class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_done" string="Hoàn thành" type="object" class="btn-primary" invisible="state != 'confirmed'"/>
-                    <button name="action_cancel" string="Đã hủy" type="object" class="btn-primary" invisible="state in ('done', 'cancel')"/>
-                    <button name="action_draft" string="Nháp" type="object" class="btn-primary" invisible="state != 'cancel'"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                    <button name="action_confirm"
+                            string="Đã xác nhận"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_progress"
+                            string="Bắt đầu thực hiện"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'confirmed'"/>
+
+                    <button name="action_done"
+                            string="Hoàn thành"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'progress'"/>
+
+                    <button name="action_cancel"
+                            string="Đã hủy"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state in ('done', 'cancel')"/>
+
+                    <button name="action_draft"
+                            string="Nháp"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'cancel'"/>
+
+                    <field name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,confirmed,progress,done"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -44,9 +72,9 @@
         </field>
     </record>
 
-    <record id="view_production_order_list" model="ir.ui.view">
-        <field name="name">production.order.list</field>
-        <field name="model">production.order</field>
+    <record id="view_manufacturing_order_list" model="ir.ui.view">
+        <field name="name">manufacturing.order.list</field>
+        <field name="model">manufacturing.order</field>
         <field name="arch" type="xml">
             <list string="Danh sách Lệnh Sản Xuất">
                 <field name="mo_id"/>
@@ -58,7 +86,7 @@
         </field>
     </record>
 
-    <record id="action_production_order" model="ir.actions.act_window">
+    <record id="action_manufacturing_order" model="ir.actions.act_window">
         <field name="name">Lệnh Sản Xuất</field>
         <field name="res_model">production.order</field>
         <field name="view_mode">list,form</field>

@@ -16,10 +16,10 @@
               name="Kế Hoạch SX" 
               sequence="10" />
 
-    <menuitem id="menu_production_order" 
+    <menuitem id="menu_manurfacturing_order" 
               name="Đơn Sản Xuất" 
               parent="menu_mrp_planner_root" 
-              action="action_production_order" 
+              action="action_manufacturing_order" 
               sequence="20"/>
     <menuitem id="menu_sub_component_root" 
               name="Kho sản phẩm" 
