@@ -1,6 +1,5 @@
 from odoo import models, fields, api
 
-
 class ProductionOperation(models.Model):
     _name = 'production.operation'
     _description = 'Công đoạn sản xuất'
@@ -13,6 +12,8 @@ class ProductionOperation(models.Model):
     quantity = fields.Integer(string='Số lượng', default=1)
     team_id = fields.Many2one('production.team', string='Nhóm sản xuất')
     machine_id = fields.Many2one('production.machine', string='Máy sản xuất')
+    expect_duration = fields.Float(string='Thời gian dự kiến (phút)', default = 0.0)
+    real_duration = fields.Float(string='Thời gian thực tế (phút)', compute='_compute_real_duration', store=True, default = 1)
 
     state = fields.Selection([
         ('pending', 'Chờ'),
@@ -25,6 +26,15 @@ class ProductionOperation(models.Model):
     date_start = fields.Datetime(string='Bắt đầu')
     date_end = fields.Datetime(string='Hoàn thành')
     note = fields.Text(string='Ghi chú')
+
+    @api.depends('date_start', 'date_end')
+    def _compute_real_duration(self):
+        for record in self:
+            if record.date_start and record.date_end:
+                delta = record.end - record.date_start
+                record.real_duration = round(delta.total_seconds() / 60.0, 1)
+            else:
+                record.real_duration = 0.0
 
     @api.onchange('machine_id')
     def _onchange_machine_id(self):

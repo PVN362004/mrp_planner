@@ -29,7 +29,6 @@
                             </div>
                             
                             <div class="border-top pt-2">
-                                <!-- Đã bổ sung title và aria-label cho các icon để triệt tiêu WARNING Odoo 19 -->
                                 <div>
                                     <i class="fa fa-cogs me-1 text-secondary" title="Linh kiện" aria-label="Linh kiện"/>
                                     <strong>Linh kiện:</strong> <field name="component_id"/> (SL: <field name="quantity"/>)
@@ -41,6 +40,10 @@
                                 <div class="mt-1">
                                     <i class="fa fa-users me-1 text-secondary" title="Nhóm sản xuất" aria-label="Nhóm sản xuất"/>
                                     <strong>Nhóm phụ trách:</strong> <field name="team_id"/>
+                                </div>
+                                <div class="mt-1 text-dark">
+                                    <i class="fa fa-clock-o me-1 text-secondary" title="Thời gian" aria-label="Thời gian"/>
+                                    <strong>Thời gian:</strong> <field name="real_duration"/> / <field name="expect_duration"/> phút
                                 </div>
                             </div>
 

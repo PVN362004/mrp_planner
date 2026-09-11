@@ -10,17 +10,17 @@
               action="action_manufacturing_order" 
               sequence="10"/>
     <menuitem id="menu_sub_component_root" 
-              name="Sản phẩm" 
+              name="Sản Phẩm" 
               parent="menu_mrp_planner_root"
               sequence="20"/>
     <menuitem id="menu_sub_component" 
-              name="Sản phẩm" 
+              name="Sản Phẩm" 
               parent="menu_sub_component_root" 
               action="action_sub_component" 
               sequence="10"/>
 
     <menuitem id="menu_production_bom" 
-              name="Định mức nguyên vật liệu BOM" 
+              name="Định Mức Nguyên Vật Liệu BOM" 
               parent="menu_sub_component_root" 
               action="action_production_bom" 
               sequence="20"/>

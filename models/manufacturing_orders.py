@@ -40,6 +40,7 @@ class ManufacturingOrder(models.Model):
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
     customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='set null')
     sale_cost = fields.Integer(string='Giá bán', required=True, default=1)
+    date_deadline = fields.Datetime(string='Hạn chót (Deadline)', copy=False)
     
     state = fields.Selection([
         ('draft', 'Nháp'),
