@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_production_bom_form" model="ir.ui.view">
-        <field name="name">production.bom.form</field>
-        <field name="model">production.bom</field>
-        <field name="arch" type="xml">
-            <form string="Lệnh Sản Xuất">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="product_id" class="oe_edit_only" string="Tên định mức (BOM)"/>
-                        <h1>
-                            <field name="product_id" placeholder="Nhập tên BOM..."/>
-                        </h1>   
-                    </div>
+    <field name="name">production.bom.form</field>
+    <field name="model">production.bom</field>
+    <field name="arch" type="xml">
+        <form string="Lệnh Sản Xuất">
+            <sheet>
+                <div class="oe_title">
+                    <!-- Đổi nhãn cho đúng bản chất là chọn sản phẩm cần làm BOM -->
+                    <label for="product_id" class="oe_edit_only" string="Sản phẩm cần định mức"/>
+                    <h1>
+                        <!-- Thêm options no_create để cấm tạo mới trực tiếp từ đây -->
+                        <field name="product_id" 
+                               placeholder="Chọn sản phẩm từ kho..." 
+                               options="{'no_create': True, 'no_create_edit': True}"/>
+                    </h1>   
+                </div>
+                <group>
                     <group>
-                        <group>
-                            <field name="quantity"/>
-                            <field name="reference"/>
-                        </group>
-                        <group>
-                            <field name="bom_type" widget="radio"/>
-                            <field name="company_id"/>
-
-                        </group>
+                        <field name="quantity"/>
+                        <field name="reference"/>
                     </group>
-                    <notebook>
-                        <page string="Thành phần linh kiện">
-                            <field name="bom_line_ids">
-                                <list editable="bottom">
-                                    <field name="sub_component_id"/>
-                                    <field name="note" width="250px"/>
-                                    <field name="quantity" width="150px"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
+                    <group>
+                        <field name="bom_type" widget="radio"/>
+                        <field name="company_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Thành phần linh kiện">
+                        <field name="bom_line_ids">
+                            <list editable="bottom">
+                                <!-- Chặn tạo linh kiện mới bừa bãi tại danh sách con -->
+                                <field name="sub_component_id" 
+                                       options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="note" width="250px"/>
+                                <field name="quantity" width="150px"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
 
     <record id="view_production_bom_list" model="ir.ui.view">
         <field name="name">production.bom.list</field>

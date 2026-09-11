@@ -40,7 +40,7 @@ class ManufacturingOrder(models.Model):
     product_qty = fields.Integer(string='Số lượng', default=1, required=True)
     customer_name = fields.Many2one('customer.partner', string='Tên khách hàng', ondelete='set null')
     sale_cost = fields.Integer(string='Giá bán', required=True, default=1)
-    date_deadline = fields.Datetime(string='Hạn chót (Deadline)', copy=False)
+    date_deadline = fields.Datetime(string='Hạn chót', copy=False)
     
     state = fields.Selection([
         ('draft', 'Nháp'),
@@ -104,6 +104,7 @@ class ManufacturingOrder(models.Model):
             operations = [(5, 0, 0)]
 
             if rec.bom_id:
+                rec.product_id = rec.bom_id.product_id
                 bom_qty = max(rec.bom_id.quantity, 1)
                 ratio = rec.product_qty / bom_qty
 
@@ -115,10 +116,12 @@ class ManufacturingOrder(models.Model):
                         'quantity': qty, 
                         'note': bom_line.note
                     }))
+                    
+                    # SỬA ĐOẠN NÀY: Cập nhật component_id thành component_ids và dùng cú pháp Many2many
                     operations.append((0, 0, {
                         'sequence': seq,
                         'name': f"Gia công/Xử lý {bom_line.sub_component_id.component_name}",
-                        'component_id': bom_line.sub_component_id.id,
+                        'component_id': [(6, 0, [bom_line.sub_component_id.id])],
                         'quantity': qty,
                         'state': 'pending',
                     }))
@@ -126,7 +129,6 @@ class ManufacturingOrder(models.Model):
 
             rec.line_ids = lines
             rec.operation_ids = operations
-         
 
 
 
@@ -136,6 +138,7 @@ class ManufacturingOrderLine(models.Model):
 
     order_id = fields.Many2one('manufacturing.order', string='Lệnh sản xuất', ondelete='cascade')
     sub_component_id = fields.Many2one('sub.component', string='Linh kiện', required=True)
+    available_qty = fields.Integer(related='sub_component_id.quantity', string='Tồn kho', readonly=True)
     quantity = fields.Integer(string='Số lượng', default=1, required=True)
     note = fields.Char(string='Ghi chú')
 

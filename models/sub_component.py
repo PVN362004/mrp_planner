@@ -8,6 +8,9 @@ class SubComponent(models.Model):
     _rec_name = 'component_name'
 
     component_name = fields.Char(string='Tên sản phẩm', required=True)
+    _sql_constraints = [
+        ('component_name_unique', 'UNIQUE(component_name)', 'Tên sản phẩm/linh kiện này đã tồn tại trong kho!')
+    ]
 
     def _default_component_id(self):
                 today_str = datetime.now().strftime('%d%m%y')

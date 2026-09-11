@@ -51,11 +51,11 @@
                         <group>
                             <field name="mo_id"/>
                             <field name="customer_name"/>
-                            <field name="product_color" widget="radio"/>
+                            <field name="bom_id"/>
                         </group>
                         <group>
                             <field name="product_qty"/>
-                            <field name="bom_id"/>
+                            <field name="product_color" widget="radio"/>
                             <field name="sale_cost"/>
                             <field name="date_deadline" widget="remaining_days"/>
                         </group>
@@ -67,6 +67,7 @@
                                     <field name="sub_component_id"/>
                                     <field name="note" width="250px"/>
                                     <field name="quantity" width="150px"/>
+                                    <field name="available_qty"/>
                                 </list>
                             </field>
                         </page>
@@ -75,7 +76,7 @@
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="name" string="Tên công việc"/>
-                                    <field name="component_id" string="Linh kiện gia công"/>
+                                    <field name="component_id" string="Linh kiện gia công" widget="many2many_tags"/>
                                     <field name="quantity" string="Số lượng"/>
                                     <field name="team_id" string="Nhóm phụ trách"/>
                                     <field name="machine_id" string="Máy thực hiện" domain="[('team_id', '=', team_id)]"/>
@@ -88,6 +89,12 @@
                                            decoration-success="state == 'done'"/>
                                     <field name="date_start" optional="hide"/>
                                     <field name="date_end" optional="hide"/>
+                                    <button name="action_start" type="object" string="Bắt đầu" 
+                                            icon="fa-play" class="btn-primary btn-sm" 
+                                            invisible="state not in ('pending', 'ready', 'pause')"/>
+                                    <button name="action_done" type="object" string="Hoàn tất" 
+                                            icon="fa-check" class="btn-success btn-sm" 
+                                            invisible="state != 'progress'"/>
                                 </list>
                             </field>
                         </page>
