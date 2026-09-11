@@ -1,5 +1,6 @@
 from datetime import datetime
 from odoo import api, models, fields
+from odoo.exceptions import ValidationError
 
 
 class SubComponent(models.Model):
@@ -8,9 +9,19 @@ class SubComponent(models.Model):
     _rec_name = 'component_name'
 
     component_name = fields.Char(string='Tên sản phẩm', required=True)
-    _sql_constraints = [
-        ('component_name_unique', 'UNIQUE(component_name)', 'Tên sản phẩm/linh kiện này đã tồn tại trong kho!')
-    ]
+    
+    @api.constrains('component_name')
+    def _check_component_name_unique(self):
+        for record in self:
+            if record.component_name:
+                # Tìm xem có bản ghi nào khác (id != record.id) đang sử dụng cùng tên này không
+                duplicate = self.env['sub.component'].search([
+                    ('component_name', '=ilike', record.component_name), 
+                    ('id', '!=', record.id)
+                ], limit=1)
+                
+                if duplicate:
+                    raise ValidationError('Tên sản phẩm/linh kiện này đã tồn tại trong kho! Vui lòng chọn tên khác.')
 
     def _default_component_id(self):
                 today_str = datetime.now().strftime('%d%m%y')
