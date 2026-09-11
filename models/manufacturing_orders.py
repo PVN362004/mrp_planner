@@ -66,8 +66,17 @@ class ManufacturingOrder(models.Model):
 
 
     def action_progress(self):
-            for rec in self:
-                rec.state = 'progress'
+        for rec in self:
+            rec.state = 'progress'
+            
+            # Lọc ra các công đoạn đang chờ hoặc sẵn sàng, sắp xếp theo 'sequence' (Thứ tự)
+            pending_ops = rec.operation_ids.filtered(
+                lambda op: op.state in ('pending', 'ready')
+            ).sorted(key=lambda op: op.sequence)
+            
+            # CHỈ kích hoạt công đoạn đầu tiên trong danh sách
+            if pending_ops:
+                pending_ops[0].action_start()
 
 
     def action_done(self):

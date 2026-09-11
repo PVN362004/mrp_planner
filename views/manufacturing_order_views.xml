@@ -52,9 +52,9 @@
                             <field name="mo_id"/>
                             <field name="customer_name"/>
                             <field name="bom_id"/>
+                            <field name="product_qty"/>
                         </group>
                         <group>
-                            <field name="product_qty"/>
                             <field name="product_color" widget="radio"/>
                             <field name="sale_cost"/>
                             <field name="date_deadline" widget="remaining_days"/>
@@ -77,7 +77,7 @@
                                     <field name="sequence" widget="handle"/>
                                     <field name="name" string="Tên công việc"/>
                                     <field name="component_id" string="Linh kiện gia công" widget="many2many_tags"/>
-                                    <field name="quantity" string="Số lượng"/>
+                                    
                                     <field name="team_id" string="Nhóm phụ trách"/>
                                     <field name="machine_id" string="Máy thực hiện" domain="[('team_id', '=', team_id)]"/>
                                     <field name="expect_duration" string="Dự kiến (phút)"/>
@@ -95,6 +95,7 @@
                                     <button name="action_done" type="object" string="Hoàn tất" 
                                             icon="fa-check" class="btn-success btn-sm" 
                                             invisible="state != 'progress'"/>
+                                    <field name="quantity" string="Số lượng"/>
                                 </list>
                             </field>
                         </page>
