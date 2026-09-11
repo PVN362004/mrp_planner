@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
-
-    <record id="view_production_operation_list" model="ir.ui.view">
-
-        <field name="name">production.operation.list</field>
+    <!-- 1. KANBAN VIEW TIẾN ĐỘ THEO TRẠNG THÁI -->
+    <record id="view_production_operation_kanban" model="ir.ui.view">
+        <field name="name">production.operation.kanban</field>
         <field name="model">production.operation</field>
-
         <field name="arch" type="xml">
-
-            <list string="Điều phối sản xuất">
-
-                <field name="sequence"/>
+            <kanban default_group_by="state" quick_create="false">
                 <field name="name"/>
                 <field name="order_id"/>
                 <field name="component_id"/>
@@ -19,107 +13,152 @@
                 <field name="team_id"/>
                 <field name="machine_id"/>
                 <field name="state"/>
-                <field name="date_start"/>
-                <field name="date_end"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click p-3 mb-2 rounded border shadow-sm bg-white">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <strong class="text-primary fs-6"><field name="name"/></strong>
+                                <field name="state" widget="badge" 
+                                       decoration-info="state == 'pending'" 
+                                       decoration-warning="state == 'ready'" 
+                                       decoration-danger="state == 'progress'" 
+                                       decoration-success="state == 'done'"/>
+                            </div>
+                            <div class="text-muted small mb-2">
+                                <strong>Lệnh SX:</strong> <field name="order_id"/>
+                            </div>
+                            
+                            <div class="border-top pt-2">
+                                <!-- Đã bổ sung title và aria-label cho các icon để triệt tiêu WARNING Odoo 19 -->
+                                <div>
+                                    <i class="fa fa-cogs me-1 text-secondary" title="Linh kiện" aria-label="Linh kiện"/>
+                                    <strong>Linh kiện:</strong> <field name="component_id"/> (SL: <field name="quantity"/>)
+                                </div>
+                                <div class="mt-1">
+                                    <i class="fa fa-desktop me-1 text-secondary" title="Máy sản xuất" aria-label="Máy sản xuất"/>
+                                    <strong>Máy thực hiện:</strong> <field name="machine_id"/>
+                                </div>
+                                <div class="mt-1">
+                                    <i class="fa fa-users me-1 text-secondary" title="Nhóm sản xuất" aria-label="Nhóm sản xuất"/>
+                                    <strong>Nhóm phụ trách:</strong> <field name="team_id"/>
+                                </div>
+                            </div>
 
-            </list>
-
+                            <div class="border-top mt-2 pt-2 d-flex justify-content-end gap-1">
+                                <button name="action_start" type="object" string="Bắt đầu" class="btn btn-sm btn-outline-primary" invisible="state not in ('pending', 'ready')">
+                                    ▶ Bắt đầu
+                                </button>
+                                <button name="action_done" type="object" string="Hoàn tất" class="btn btn-sm btn-outline-success" invisible="state != 'progress'">
+                                    ✔ Hoàn thành
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
-
     </record>
 
-
+    <!-- 2. FORM VIEW CÔNG ĐOẠN -->
     <record id="view_production_operation_form" model="ir.ui.view">
-
         <field name="name">production.operation.form</field>
         <field name="model">production.operation</field>
-
         <field name="arch" type="xml">
-
             <form string="Công đoạn sản xuất">
-
                 <header>
-
-                    <button name="action_ready"
-                            type="object"
-                            string="Sẵn sàng"
-                            class="btn-secondary"/>
-
-                    <button name="action_start"
-                            type="object"
-                            string="Bắt đầu"
-                            class="btn-primary"/>
-
-                    <button name="action_done"
-                            type="object"
-                            string="Hoàn thành"
-                            class="btn-primary"/>
-
-                    <button name="action_cancel"
-                            type="object"
-                            string="Hủy"/>
-
-                    <button name="action_reset"
-                            type="object"
-                            string="Đặt lại"/>
-
-                    <field name="state"
-                           widget="statusbar"
-                           statusbar_visible="pending,ready,progress,done"/>
-
+                    <button name="action_ready" type="object" string="Sẵn sàng" class="btn-secondary" invisible="state != 'pending'"/>
+                    <button name="action_start" type="object" string="Bắt đầu chạy máy" class="btn-primary" invisible="state not in ('pending', 'ready')"/>
+                    <button name="action_done" type="object" string="Hoàn thành" class="btn-success" invisible="state != 'progress'"/>
+                    <button name="action_cancel" type="object" string="Hủy bỏ" invisible="state in ('done', 'cancel')"/>
+                    <button name="action_reset" type="object" string="Đặt lại" invisible="state != 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,ready,progress,done"/>
                 </header>
-
                 <sheet>
-
                     <div class="oe_title">
+                        <label for="name" string="Tên công việc"/>
                         <h1>
-                            <field name="name"
-                                   placeholder="VD: Cắt linh kiện"/>
+                            <field name="name" placeholder="VD: Phay rãnh then linh kiện..."/>
                         </h1>
                     </div>
-
                     <group>
-
-                        <group>
-
+                        <group string="Chi tiết linh kiện &amp; Lệnh">
                             <field name="order_id"/>
-                            <field name="sequence"/>
                             <field name="component_id"/>
                             <field name="quantity"/>
-
+                            <field name="sequence"/>
                         </group>
-
-                        <group>
-
+                        <group string="Vị trí &amp; Nơi sản xuất">
                             <field name="team_id"/>
-                            <field name="machine_id"/>
+                            <field name="machine_id" domain="[('team_id', '=', team_id)]"/>
                             <field name="date_start"/>
                             <field name="date_end"/>
-
                         </group>
-
                     </group>
-
                     <group>
-                        <field name="note"/>
+                        <field name="note" placeholder="Nhật ký vận hành / Sự cố kỹ thuật..."/>
                     </group>
-
                 </sheet>
-
             </form>
-
         </field>
-
     </record>
 
+    <!-- 3. LIST VIEW -->
+    <record id="view_production_operation_list" model="ir.ui.view">
+        <field name="name">production.operation.list</field>
+        <field name="model">production.operation</field>
+        <field name="arch" type="xml">
+            <list string="Điều phối công đoạn">
+                <field name="sequence" widget="handle"/>
+                <field name="order_id"/>
+                <field name="name"/>
+                <field name="component_id"/>
+                <field name="quantity"/>
+                <field name="team_id"/>
+                <field name="machine_id"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'pending'" 
+                       decoration-warning="state == 'ready'" 
+                       decoration-danger="state == 'progress'" 
+                       decoration-success="state == 'done'"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+            </list>
+        </field>
+    </record>
 
-    <record id="action_production_operation"
-            model="ir.actions.act_window">
+    <!-- 4. SEARCH VIEW CHUẨN ODOO 19 -->
+    <record id="view_production_operation_search" model="ir.ui.view">
+        <field name="name">production.operation.search</field>
+        <field name="model">production.operation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="order_id"/>
+                <field name="component_id"/>
+                <field name="machine_id"/>
+                <field name="team_id"/>
+                
+                <separator/>
+                <filter string="Chờ xử lý" name="filter_pending" domain="[('state', '=', 'pending')]"/>
+                <filter string="Sẵn sàng" name="filter_ready" domain="[('state', '=', 'ready')]"/>
+                <filter string="Đang thực hiện" name="filter_progress" domain="[('state', '=', 'progress')]"/>
+                <filter string="Hoàn thành" name="filter_done" domain="[('state', '=', 'done')]"/>
+                
+                <separator/>
+                <filter string="Theo Máy sản xuất" name="group_by_machine" context="{'group_by': 'machine_id'}"/>
+                <filter string="Theo Nhóm sản xuất" name="group_by_team" context="{'group_by': 'team_id'}"/>
+                <filter string="Theo Lệnh sản xuất" name="group_by_order" context="{'group_by': 'order_id'}"/>
+                <filter string="Theo Trạng thái" name="group_by_state" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
 
-        <field name="name">Điều phối sản xuất</field>
+    <!-- 5. ACTION (Khớp chuẩn ID action_production_operation gọi từ menu) -->
+    <record id="action_production_operation" model="ir.actions.act_window">
+        <field name="name">Tổng Quan Tiến Độ Sản Xuất</field>
         <field name="res_model">production.operation</field>
-        <field name="view_mode">list,form</field>
-
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_production_operation_search"/>
+        <field name="context">{'search_default_group_by_state': 1}</field>
     </record>
-
 </odoo>

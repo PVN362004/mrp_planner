@@ -41,11 +41,3 @@ class ProductBomLine(models.Model):
     quantity = fields.Integer(string='Số lượng', default=1, required=True)
     note = fields.Char(string='Ghi chú')
 
-class CompanyName(models.Model):
-    _name = 'company.name'
-    _description = 'Company Model'
-    _rec_name = "company_id"
-
-    company_id = fields.Char(string='Tên công ty', required=True)
-    company_email = fields.Char(string='Email công ty')
-    company_address = fields.Char(string='Địa chỉ của công ty')

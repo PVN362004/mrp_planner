@@ -94,25 +94,37 @@ class ManufacturingOrder(models.Model):
 
     bom_id = fields.Many2one('production.bom', string='Định mức (BOM)')
     line_ids = fields.One2many('manufacturing.order.line', 'order_id', string='Thành phần linh kiện')
+    operation_ids = fields.One2many('production.operation', 'order_id', string='Công đoạn / Work Orders')
 
     @api.onchange('bom_id', 'product_qty')
     def _onchange_bom_id(self):
         for rec in self:
             lines = [(5, 0, 0)]
+            operations = [(5, 0, 0)]
 
             if rec.bom_id:
                 bom_qty = max(rec.bom_id.quantity, 1)
                 ratio = rec.product_qty / bom_qty
 
+                seq = 1
                 for bom_line in rec.bom_id.bom_line_ids:
-
+                    qty = int(bom_line.quantity * ratio)
                     lines.append((0, 0, {
                         'sub_component_id': bom_line.sub_component_id.id,
-                        'quantity': int(bom_line.quantity * ratio), 
+                        'quantity': qty, 
                         'note': bom_line.note
                     }))
+                    operations.append((0, 0, {
+                        'sequence': seq,
+                        'name': f"Gia công/Xử lý {bom_line.sub_component_id.component_name}",
+                        'component_id': bom_line.sub_component_id.id,
+                        'quantity': qty,
+                        'state': 'pending',
+                    }))
+                    seq += 1
 
             rec.line_ids = lines
+            rec.operation_ids = operations
          
 
 

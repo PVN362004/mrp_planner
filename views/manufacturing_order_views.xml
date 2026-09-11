@@ -68,18 +68,22 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Điều phối sản xuất">
+                        <page string="Phân công công đoạn (Work Orders)" name="workorders">
                             <field name="operation_ids">
                                 <list editable="bottom">
-                                    <field name="sequence"/>
-                                    <field name="name"/>
-                                    <field name="component_id"/>
-                                    <field name="quantity"/>
-                                    <field name="team_id"/>
-                                    <field name="machine_id"/>
-                                    <field name="state"/>
-                                    <field name="date_start"/>
-                                    <field name="date_end"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name" string="Tên công việc"/>
+                                    <field name="component_id" string="Linh kiện gia công"/>
+                                    <field name="quantity" string="Số lượng"/>
+                                    <field name="team_id" string="Nhóm phụ trách"/>
+                                    <field name="machine_id" string="Máy thực hiện" domain="[('team_id', '=', team_id)]"/>
+                                    <field name="state" widget="badge" 
+                                           decoration-info="state == 'pending'" 
+                                           decoration-warning="state == 'ready'" 
+                                           decoration-primary="state == 'progress'" 
+                                           decoration-success="state == 'done'"/>
+                                    <field name="date_start" optional="hide"/>
+                                    <field name="date_end" optional="hide"/>
                                 </list>
                             </field>
                         </page>

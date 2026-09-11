@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_production_machine_list" model="ir.ui.view">
+        <field name="name">production.machine.list</field>
+        <field name="model">production.machine</field>
+        <field name="arch" type="xml">
+            <list string="Máy sản xuất">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="team_id"/>
+                <field name="operator_id"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_production_machine_kanban" model="ir.ui.view">
+        <field name="name">production.machine.kanban</field>
+        <field name="model">production.machine</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="team_id"/>
+                <field name="operator_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click p-3 border rounded shadow-sm bg-white">
+                            <div class="fw-bold fs-5 text-primary"><field name="name"/></div>
+                            <div class="text-muted small">Mã máy: <field name="code"/></div>
+                            <hr class="my-2"/>
+                            <div><strong>Nhóm:</strong> <field name="team_id"/></div>
+                            <div><strong>Vận hành:</strong> <field name="operator_id"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_production_machine_form" model="ir.ui.view">
+        <field name="name">production.machine.form</field>
+        <field name="model">production.machine</field>
+        <field name="arch" type="xml">
+            <form string="Máy sản xuất">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Tên máy"/>
+                        <h1>
+                            <field name="name" placeholder="VD: Máy phay CNC 01"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="team_id"/>
+                        </group>
+                        <group>
+                            <field name="operator_id"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="Thông số kỹ thuật hoặc quy trình an toàn..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_production_machine" model="ir.actions.act_window">
+        <field name="name">Máy Sản Xuất</field>
+        <field name="res_model">production.machine</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+</odoo>

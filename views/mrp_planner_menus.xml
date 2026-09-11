@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="action_mrp_planner_orders" model="ir.actions.act_window">
-        <field name="name">Đơn chờ sản xuất</field>
-        <field name="res_model">sale.order</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('state', '=', 'sale')]</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Chưa có đơn hàng nào cần lên kế hoạch sản xuất!
-            </p>
-        </field>
-    </record>
-
     <menuitem id="menu_mrp_planner_root" 
               name="Kế Hoạch SX" 
               sequence="10" />
@@ -20,11 +8,11 @@
               name="Đơn Sản Xuất" 
               parent="menu_mrp_planner_root" 
               action="action_manufacturing_order" 
-              sequence="20"/>
+              sequence="10"/>
     <menuitem id="menu_sub_component_root" 
               name="Sản phẩm" 
               parent="menu_mrp_planner_root"
-              sequence="40"/>
+              sequence="20"/>
     <menuitem id="menu_sub_component" 
               name="Sản phẩm" 
               parent="menu_sub_component_root" 
@@ -35,7 +23,29 @@
               name="Định mức nguyên vật liệu BOM" 
               parent="menu_sub_component_root" 
               action="action_production_bom" 
+              sequence="20"/>
+
+    <menuitem id="menu_production_overview" 
+              name="Tiến Độ Sản Xuất" 
+              parent="menu_mrp_planner_root" 
+              action="action_production_operation" 
               sequence="30"/>
 
+    <menuitem id="menu_production_resources_root" 
+              name="Hạ Tầng Sản Xuất" 
+              parent="menu_mrp_planner_root"
+              sequence="40"/>
+
+    <menuitem id="menu_production_team" 
+              name="Nhóm Sản Xuất" 
+              parent="menu_production_resources_root" 
+              action="action_production_team" 
+              sequence="10"/>
+
+    <menuitem id="menu_production_machine" 
+              name="Máy Sản Xuất" 
+              parent="menu_production_resources_root" 
+              action="action_production_machine" 
+              sequence="20"/>
 
 </odoo>
